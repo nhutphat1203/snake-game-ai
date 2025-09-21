@@ -7,15 +7,19 @@ import os
 
 class Linear_Net(nn.Module):
     
-    def __init__(self, input_size, hidden_size, output_size):
+    def __init__(self, input_size=11, hidden_size=128, output_size=3):
         super().__init__()
-        self.linear1 = nn.Linear(input_size, hidden_size)
-        self.linear2 = nn.Linear(hidden_size, output_size)
-    
+        # Một hidden layer thôi là đủ
+        self.fc1 = nn.Linear(input_size, hidden_size)
+        self.out = nn.Linear(hidden_size, output_size)
+
+        # Khởi tạo trọng số (giúp ổn định hơn khi train RL)
+        nn.init.kaiming_uniform_(self.fc1.weight, nonlinearity="relu")
+        nn.init.xavier_uniform_(self.out.weight)
+
     def forward(self, x):
-        x = F.relu(self.linear1(x))
-        x = self.linear2(x)
-        return x
+        x = F.relu(self.fc1(x))
+        return self.out(x)   # Linear output = Q-values
     
     def save(self, file_name='model.pth'):
         model_dir_path = './model'
@@ -61,6 +65,7 @@ class Trainer:
         # preds[argmax(action)] = Q_new
         self.optimizer.zero_grad()
         loss = self.criterion(target, pred)
+        
         loss.backward()
 
         self.optimizer.step()

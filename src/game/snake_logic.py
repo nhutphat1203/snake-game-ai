@@ -61,7 +61,7 @@ class SnakeEnv:
         if (head.x < 0 or head.x >= self.width or
         head.y < 0 or head.y >= self.height):
             stop = True
-            reward = -15
+            reward = -10
         return reward, stop
     
     def _eat_itself(self, head):
@@ -69,7 +69,7 @@ class SnakeEnv:
         reward = 0
         if head in self.snake:
             stop = True
-            reward = -20
+            reward = -40
         return reward, stop
         
 
@@ -118,7 +118,7 @@ class SnakeEnv:
         # Ăn thức ăn
         if new_head == self.food:
             self.score += 1
-            reward += 10
+            reward += 20
             self.state_count = 0
             self._place_food()
         else:
@@ -196,12 +196,6 @@ class SnakeEnv:
         danger_straight = self._is_collision(straight)
         danger_left     = self._is_collision(left)
         danger_right    = self._is_collision(right)
-        
-        if len(self.snake) > 4:
-            straight2, right2, left2 = self._n_step_vision()
-            danger_straight = danger_straight or straight2
-            danger_left = danger_left or left2
-            danger_right = danger_right or right2
             
         return danger_straight, danger_right, danger_left
 
@@ -212,29 +206,4 @@ class SnakeEnv:
             point in self.snake):
             return True
         return False
-    
-    def _n_step_vision(self, n=2):
-        head = self.snake[0]
-        # Map hướng sang vector (dx,dy)
-        directions = {
-            Direction.UP:    (0, -BLOCK_SIZE * n),
-            Direction.DOWN:  (0, BLOCK_SIZE * n),
-            Direction.LEFT:  (-BLOCK_SIZE * n, 0),
-            Direction.RIGHT: (BLOCK_SIZE * n, 0),
-        }
-        dx, dy = directions[self.direction]
 
-        left     = Point(head.x + dy, head.y - dx)
-        right    = Point(head.x - dy, head.y + dx) 
-        
-        danger_straight = False
-        danger_left     = False
-        danger_right    = False
-        
-        snake_len = len(self.snake)
-        
-        if left in self.snake and self.snake[snake_len - n - 1] == left:
-            danger_left = True
-        if right in self.snake and self.snake[snake_len - n - 1] == right:
-            danger_right = True
-        return danger_straight, danger_right, danger_left
