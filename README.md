@@ -10,7 +10,7 @@ Snake AI is a simple game where an AI-controlled snake learns to play the classi
 
 ```bash
 git clone https://github.com/nhutphat1203/snake-game-ai.git
-cd snake-ai
+cd snake-game-ai
 ```
 
 2. (Optional) Create a virtual environment:

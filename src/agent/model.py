@@ -9,7 +9,7 @@ class Linear_Net(nn.Module):
     
     def __init__(self, input_size=11, hidden_size=128, output_size=3):
         super().__init__()
-        # Một hidden layer thôi là đủ
+
         self.fc1 = nn.Linear(input_size, hidden_size)
         self.out = nn.Linear(hidden_size, output_size)
 
